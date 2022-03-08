@@ -19,9 +19,11 @@ public class login extends javax.swing.JFrame {
      * Creates new form login
      */
     public login() {
+        
         initComponents();
         jTextField1.setText("root");
         jPasswordField2.setText("toor");
+        this.setLocationRelativeTo(null);
     }
 
     /**
