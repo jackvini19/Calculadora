@@ -145,7 +145,7 @@ private void iniciarComboBox(){
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       jLabel1.setText(JComboBox2.getSelectedItem().toString()); // TODO add your handling code here:
+       jLabel1.setText(jComboBox2.getSelectedItem().toString()); // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**

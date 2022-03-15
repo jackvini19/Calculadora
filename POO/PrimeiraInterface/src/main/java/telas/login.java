@@ -175,7 +175,7 @@ public class login extends javax.swing.JFrame {
            if (!Arrays.equals(senha, "toor".toCharArray())){
                 JOptionPane.showMessageDialog(rootPane, "Senha Errada");
            }else {
-             JOptionPane.showMessageDialog(rootPane, "Bem Vindo "+login);
+            /* JOptionPane.showMessageDialog(rootPane, "Bem Vindo "+login);*/
              principal1 tela = new principal1();
              tela.setVisible(true);
              this.dispose();
