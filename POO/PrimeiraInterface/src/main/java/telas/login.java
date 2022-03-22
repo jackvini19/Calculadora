@@ -7,6 +7,7 @@ package telas;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
+import persistencia.PessoaDAOImp;
 
 
 /**
@@ -24,6 +25,11 @@ public class login extends javax.swing.JFrame {
         jTextField1.setText("root");
         jPasswordField2.setText("toor");
         this.setLocationRelativeTo(null);
+        try {
+             PessoaDAOImp d = new PessoaDAOImp();
+        } catch (Exception e) {
+        }
+       
     }
 
     /**

@@ -20,13 +20,13 @@ public class Conexao {
             
             String servidor= "localhost";
             String database = "naosei";
-            String porta = "3306";
+            String porta = "3307";
             
             String bd_url ="jdbc:mysql://"+servidor+
                     ":"+porta+"/"+database+
                     "?useTimezone=true&serverTimezone=UTC";
             String usuario ="root";
-            String senha = "toor";
+            String senha = "mysql";
             return DriverManager.getConnection(bd_url, usuario,senha);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -46,11 +46,11 @@ public class Conexao {
             throws Exception{
         fechar(con,stmt,rs);
     }
-     public static void fecharConexao(Connection con, Statement stmt, ResulSet rs)
+     public static void fecharConexao(Connection con, Statement stmt)
             throws Exception{
          fechar(con,stmt,null);
     }
-      public static void fecharConexao(Connection con, Statement stmt, ResulSet rs)
+      public static void fecharConexao(Connection con)
             throws Exception{
          fechar(con,null,null);
 }
