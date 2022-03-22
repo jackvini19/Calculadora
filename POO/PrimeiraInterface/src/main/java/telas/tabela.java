@@ -7,6 +7,8 @@ package telas;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -29,14 +31,14 @@ public class tabela extends javax.swing.JDialog {
         
     }
     private void configurarCampoPesquisa(){
-    jTextField1.getDocument().addDocumentListener(
-            new DocumentListener(){
+    jTextField1.getDocument().addDocumentListener(new DocumentListener(){
     @Override
     public void insertUpdate(DocumentEvent e){pesquisar();     }
     @Override
     public void removeUpdate(DocumentEvent e){  pesquisar();      }
-    @Override
-    public void changeUpdate(DocumentEvent e){pesquisar();        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {pesquisar();}
     }
     );
 }
