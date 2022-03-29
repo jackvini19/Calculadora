@@ -31,7 +31,7 @@ public class Criptografia {
             builder.append(String.format("%02X", 0xFF & c));
         }
         String novaSenha = builder.toString();
-        System.out.println("nova senha" + novaSenha);
+        System.out.println("nova senha : " + novaSenha);
         return "";
        
     }
