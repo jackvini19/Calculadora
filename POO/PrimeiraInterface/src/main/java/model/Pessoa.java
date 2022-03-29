@@ -12,18 +12,23 @@ public class Pessoa {
     private int id;
     private String nome;
     private String email;
+    private String datanasc;
     private String senha;
+   
 
     public Pessoa() {
     }
 
-    public Pessoa(int id, String nome, String email, String senha) {
+    public Pessoa(int id, String nome, String email,String datanasc, String senha) {
         this.id = id;
         this.nome = nome;
         this.email = email;
+        this.datanasc = datanasc;
         this.senha = senha;
+        
     }
 
+    
     public int getId() {
         return id;
     }
@@ -43,6 +48,14 @@ public class Pessoa {
     public String getEmail() {
         return email;
     }
+    public String getDatanasc() {
+        return datanasc;
+    }
+
+    public void setDatanasc(String datanasc) {
+        this.datanasc = datanasc;
+    }
+
 
     public void setEmail(String email) {
         this.email = email;
