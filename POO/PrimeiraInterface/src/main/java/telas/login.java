@@ -5,9 +5,13 @@
 package telas;
 
 import java.awt.event.KeyEvent;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
+import model.Pessoa;
 import persistencia.PessoaDAOImp;
+import utilitarios.Criptografia;
 
 
 /**
@@ -168,8 +172,26 @@ public class login extends javax.swing.JFrame {
         this.dispose();
     }
     
-    private void autenticar(){
+    private void autenticar() {
         String login = jTextField1.getText();
+        Criptografia c = new Criptografia();
+        try {
+            String senha = c.Criptografar(
+                    jPasswordField2.getPassword());
+            PessoaDAOImp dao = new PessoaDAOImp();
+            Pessoa pess = dao.Validar(login,senha);
+            if (pess == null){
+                JOptionPane.showMessageDialog(rootPane, "Dados de Login Errado . Tente novamente");
+            }else{
+                principal1 tela =new principal1 ();
+                tela.setVisible(true);
+                this.dispose();
+            }
+        }catch (Exception e){
+            System.err.println("Erro :"+e);
+        }
+    
+        /*
         if (!login.equals("root")){
             JOptionPane.showMessageDialog(rootPane, "Login errado");
 
@@ -181,13 +203,13 @@ public class login extends javax.swing.JFrame {
            if (!Arrays.equals(senha, "toor".toCharArray())){
                 JOptionPane.showMessageDialog(rootPane, "Senha Errada");
            }else {
-            /* JOptionPane.showMessageDialog(rootPane, "Bem Vindo "+login);*/
+            /* JOptionPane.showMessageDialog(rootPane, "Bem Vindo "+login);
              principal1 tela = new principal1();
              tela.setVisible(true);
              this.dispose();
                 }
                         
-           }
+           }*/
          
     }
      

@@ -210,18 +210,25 @@ public class Cadastro extends javax.swing.JDialog {
        if (email.equals("")){
            JOptionPane.showMessageDialog(rootPane, "O email não pode ser nulo");
            return;
+           
        }
        if (senha.equals("")){
            JOptionPane.showMessageDialog(rootPane, "A senha não pode ser nulo");
            return;
        }
        try {
+           PessoaDAOImp dao = new PessoaDAOImp();
+           if (dao.VerificarEmail(email)){
+               JOptionPane.showMessageDialog(rootPane, "Erro: Este email ja esta cadastrado");
+               return;
+           }
       Criptografia crip = new Criptografia();
        String pass = crip.Criptografar(senha);
-       Pessoa pes = new Pessoa(0 , nome, email, datanasc, pass);
+       //Pessoa pes = new Pessoa(0 , nome, email, datanasc, pass);
        
-            PessoaDAOImp dao = new PessoaDAOImp();
-            dao.Inserir(pes);
+           Pessoa pes = new Pessoa(0, nome , email, datanasc , pass );
+           dao =new PessoaDAOImp();
+           dao.Inserir(pes);
             JOptionPane.showMessageDialog(rootPane,"cadastro realizado com sucesso :");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane,"Erro :"+ e);

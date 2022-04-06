@@ -24,6 +24,9 @@ public class Criptografia {
     String res = Arrays.toString(senha);
         System.out.println("senha:" + res);
         MessageDigest a = MessageDigest.getInstance("SHA-256");
+        
+        String salt = "210485102044561564h056b1gfjn013bfebgdxgbgn01278nhvgf";
+        a.update(salt.getBytes());
         byte b[] = a.digest(res.getBytes("UTF-8"));
         //System.out.println("nova senha: "+ Arrays.toString(b));
         StringBuilder builder = new StringBuilder();
@@ -32,7 +35,7 @@ public class Criptografia {
         }
         String novaSenha = builder.toString();
         System.out.println("nova senha : " + novaSenha);
-        return "";
+        return novaSenha;
        
     }
 }

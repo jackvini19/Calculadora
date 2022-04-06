@@ -7,6 +7,7 @@ package persistencia;
 import static java.lang.Class.forName;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
@@ -32,7 +33,7 @@ public class Conexao {
             throw new Exception(e.getMessage());
         }
     }
-    public static void fechar(Connection con, Statement stmt, ResulSet rs)
+    public static void fechar(Connection con, Statement stmt, ResultSet rs)
             throws Exception{
         try {
              if (rs !=null){rs.close();}
@@ -42,7 +43,7 @@ public class Conexao {
     throw new Exception(e.getMessage());
         }    
     }
-    public static void fecharConexao(Connection con, Statement stmt, ResulSet rs)
+    public static void fecharConexao(Connection con, Statement stmt, ResultSet rs)
             throws Exception{
         fechar(con,stmt,rs);
     }
