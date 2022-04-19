@@ -26,7 +26,7 @@ public class login extends javax.swing.JFrame {
     public login() {
         
         initComponents();
-        jTextField1.setText("root");
+        jTextField1.setText("jackvinistm4@gmail");
         jPasswordField2.setText("toor");
         this.setLocationRelativeTo(null);
         try {

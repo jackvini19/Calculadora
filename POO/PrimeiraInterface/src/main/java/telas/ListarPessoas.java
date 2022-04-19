@@ -4,33 +4,40 @@
  */
 package telas;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import model.Pessoa;
+import persistencia.Conexao;
+import persistencia.PessoaDAO;
+import persistencia.PessoaDAOImp;
 
 /**
  *
  * @author aluno
  */
-public class tabela extends javax.swing.JDialog {
+public class ListarPessoas extends javax.swing.JDialog {
 
     /**
-     * Creates new form tabela
+     * Creates new form ListarPessoas
      */
-    public tabela(java.awt.Frame parent, boolean modal) {
+    public ListarPessoas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.setLocationRelativeTo(null);
         preenchertabela();
-        
+        configurarCampoPesquisa();
     }
-    private void configurarCampoPesquisa(){
+     private void configurarCampoPesquisa(){
     jTextField1.getDocument().addDocumentListener(new DocumentListener(){
     @Override
     public void insertUpdate(DocumentEvent e){pesquisar();     }
@@ -42,20 +49,38 @@ public class tabela extends javax.swing.JDialog {
     }
     );
 }
-    private void preenchertabela(){
+  private void preenchertabela(){
         DefaultTableModel modelo  =  new DefaultTableModel();
         modelo.addColumn("id");
         modelo.addColumn("nome");
-        modelo.addColumn("idade");
-        
+        modelo.addColumn("email");
+        modelo.addColumn("datanasc");
+        try {
+            PessoaDAOImp dao= new PessoaDAOImp();
+            List<Pessoa> res = dao.Listar();
+            for (Pessoa re : res){
+                modelo.addRow(
+                new Object[]{
+                    re.getId(),
+                    re.getNome(),
+                    re.getEmail(),
+                    re.getDatanasc()
+                }
+                );
+            }
+           jTable1.setModel(modelo);
+      } catch (Exception e) {
+      }
+            
+      /*
         modelo.addRow(new Object[]{"1","jack","18"});
         modelo.addRow(new Object[]{"2","feh","29"});
         modelo.addRow(new Object[]{"3","josé","45"});
         modelo.addRow(new Object[]{"4","fernando","26"});
-        jTable1.setModel(modelo);
+        jTable1.setModel(modelo);*/
         
-       TableColumnModel modelo2 = jTable1.getColumnModel();
-       modelo2.removeColumn(modelo2.getColumn(0));
+       //TableColumnModel modelo2 = jTable1.getColumnModel();
+        //modelo2.removeColumn(modelo2.getColumn(0));
         
         RowSorter<TableModel> ordenador = new TableRowSorter<TableModel>(modelo);
         jTable1.setRowSorter(ordenador);
@@ -71,11 +96,9 @@ public class tabela extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -92,110 +115,59 @@ public class tabela extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("remover");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Remover");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("teste");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("vizu");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText("Pesquisar");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
+        jButton2.setText("Atualizar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(142, 142, 142)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton4)
-                .addContainerGap(196, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(407, Short.MAX_VALUE)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                .addGap(98, 98, 98)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(148, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)))
+                    .addComponent(jButton2))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int pos= jTable1.convertRowIndexToModel(jTable1.getSelectedRow());// TODO add your handling code here:
-        if (pos < 0){
-            JOptionPane.showConfirmDialog(rootPane,"selecione uma linha traste");
-        }else{
-            DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
-            modelo.removeRow(pos);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-         DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
-         int pos = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
-         if (pos < 0){
-             pos = 0;
-         }
-           modelo.moveRow(pos, pos+1, modelo.getRowCount()-2);// TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       int pos= jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
-       if (pos < 0){
-            JOptionPane.showConfirmDialog(rootPane,"selecio uma linha boi véi");
-       }else{ 
-       String msg = jTable1.getModel().getValueAt(pos, 0).toString();
-       msg = msg+"-"+ jTable1.getModel().getValueAt(pos, 1);
-       msg = msg+"-"+ jTable1.getModel().getValueAt(pos, 2);
-       JOptionPane.showMessageDialog(rootPane,msg);
-       }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-       pesquisar();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        pesquisar();
+    }   
         private void pesquisar(){
-    DefaultTableModel modelo= (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel modelo= (DefaultTableModel) jTable1.getModel();
        TableRowSorter filtro = new TableRowSorter(modelo);
         jTable1.setRowSorter(filtro);
         String termo =jTextField1.getText();
@@ -203,8 +175,31 @@ public class tabela extends javax.swing.JDialog {
         filtro.setRowFilter(null);
         }else{
         filtro.setRowFilter(RowFilter.regexFilter(termo));
+        }   // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+        
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    
+    int pos = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());// TODO add your handling code here:
+        if (pos <= 0){
+            JOptionPane.showConfirmDialog(rootPane,"selecione uma linha traste");
+        }else{
+            DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
+            modelo.removeRow(pos);
+            String msg = jTable1.getModel().getValueAt(pos, 0).toString();
+            int id = Interger.parseInt(msg);
+            try {
+                PessoaDAOImp dao  = new PessoaDAOImp();
+                dao.Remover(id);
+                preenchertabela();
+            } catch (Exception e) {
+               // Logger.getLogger(ListarPessoas.class.getName()).log(record);
+            }
+            
         }
-    }                      
+    }//GEN-LAST:event_jButton1ActionPerformed
+       
+
     /**
      * @param args the command line arguments
      */
@@ -222,20 +217,20 @@ public class tabela extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(tabela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListarPessoas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(tabela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListarPessoas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(tabela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListarPessoas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(tabela.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListarPessoas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                tabela dialog = new tabela(new javax.swing.JFrame(), true);
+                ListarPessoas dialog = new ListarPessoas(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -250,14 +245,21 @@ public class tabela extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
-    private int getRowCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   
+
+    private static class Interger {
+
+        private static int parseInt(String a) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        public Interger() {
+        }
     }
+
 }

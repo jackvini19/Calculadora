@@ -14,7 +14,7 @@ public interface PessoaDAO {
     public void Remover(int id) throws Exception;
     public  void Atualizar(Pessoa pes) throws Exception;
     public  List<Pessoa>Buscar(Pessoa pes) throws Exception;
-    public  List<Pessoa>Listar(Pessoa pes) throws Exception;
+    public  List<Pessoa>Listar() throws Exception;
     public boolean VerificarEmail(String email) throws Exception;
     public Pessoa Validar(String email ,String senha) throws Exception;
         

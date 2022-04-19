@@ -7,6 +7,8 @@ package persistencia;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import model.Pessoa;
@@ -59,7 +61,28 @@ public class PessoaDAOImp implements PessoaDAO{
 
     @Override
     public void Remover(int id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement ps = null;
+        ResultSet rs=null;
+        if (id <= 0){
+            throw new Exception("O valor não pode ser nulo.");
+        }
+        try {
+             con = Conexao.abrirConexao();
+             System.out.println("Conexão realizada com sucesso");
+             String sql = "DELETE FROM quemsabe "+
+                     "WHERE id = ?";
+             ps = con.prepareStatement(sql);
+             ps.setInt(1, id);
+             ps.executeUpdate();
+        }
+       catch (Exception e) {
+           //System.err.println("Erro na conexão");
+            System.err.println("Erro:"+e.getMessage());
+            throw new Exception("Erro ao remover pessoa :"+ e.getMessage());
+        }finally {
+             Conexao.fecharConexao(con, ps, rs);
+         
+        }
     }
 
     @Override
@@ -73,8 +96,30 @@ public class PessoaDAOImp implements PessoaDAO{
     }
 
     @Override
-    public List<Pessoa> Listar(Pessoa pes) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Pessoa> Listar() throws Exception {
+       List<Pessoa> lista = new ArrayList<>();
+       Statement stmt = null;
+       ResultSet rs = null;
+      try {
+             con = Conexao.abrirConexao();
+             System.out.println("Conexão realizada com sucesso");
+             String sql = "SELECT * FROM quemsabe";
+             stmt = con.createStatement();
+             rs = stmt.executeQuery(sql);
+             while (rs.next()){
+                  Pessoa pess = new Pessoa();
+                 pess.setId(rs.getInt("id"));
+                 pess.setEmail(rs.getString("email"));
+                 pess.setNome(rs.getString("nome"));
+                 //pess.setSenha("senha");
+                 pess.setDatanasc(rs.getString("datanasc"));
+               lista.add(pess);
+             }
+             return lista;
+      }catch (Exception e){
+          
+      }
+        return null;
     }
 
     @Override
@@ -93,6 +138,7 @@ public class PessoaDAOImp implements PessoaDAO{
              ps.setString(1, email);
              rs = ps.executeQuery();
              if (rs.next()){
+                 
                  return true;
              }
        return false;
@@ -143,6 +189,7 @@ public class PessoaDAOImp implements PessoaDAO{
              Conexao.fecharConexao(con, ps, rs);
     }
 }
+
 }
 
     
