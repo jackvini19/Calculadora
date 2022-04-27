@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
@@ -31,60 +32,72 @@ public class ListarPessoas extends javax.swing.JDialog {
     /**
      * Creates new form ListarPessoas
      */
-    public ListarPessoas(java.awt.Frame parent, boolean modal) {
+    private JFrame pai;
+
+    public ListarPessoas(java.awt.Frame parent, boolean modal,
+            JFrame pai) {
         super(parent, modal);
+        this.pai = pai;
         initComponents();
         preenchertabela();
         configurarCampoPesquisa();
     }
-     private void configurarCampoPesquisa(){
-    jTextField1.getDocument().addDocumentListener(new DocumentListener(){
-    @Override
-    public void insertUpdate(DocumentEvent e){pesquisar();     }
-    @Override
-    public void removeUpdate(DocumentEvent e){  pesquisar();      }
 
-        @Override
-        public void changedUpdate(DocumentEvent e) {pesquisar();}
+    private void configurarCampoPesquisa() {
+        jTextField1.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                pesquisar();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                pesquisar();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                pesquisar();
+            }
+        }
+        );
     }
-    );
-}
-  private void preenchertabela(){
-        DefaultTableModel modelo  =  new DefaultTableModel();
+
+    private void preenchertabela() {
+        DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("id");
         modelo.addColumn("nome");
         modelo.addColumn("email");
         modelo.addColumn("datanasc");
         try {
-            PessoaDAOImp dao= new PessoaDAOImp();
+            PessoaDAOImp dao = new PessoaDAOImp();
             List<Pessoa> res = dao.Listar();
-            for (Pessoa re : res){
+            for (Pessoa re : res) {
                 modelo.addRow(
-                new Object[]{
-                    re.getId(),
-                    re.getNome(),
-                    re.getEmail(),
-                    re.getDatanasc()
-                }
+                        new Object[]{
+                            re.getId(),
+                            re.getNome(),
+                            re.getEmail(),
+                            re.getDatanasc()
+                        }
                 );
             }
-           jTable1.setModel(modelo);
-      } catch (Exception e) {
-      }
-            
-      /*
+            jTable1.setModel(modelo);
+        } catch (Exception e) {
+        }
+
+        /*
         modelo.addRow(new Object[]{"1","jack","18"});
         modelo.addRow(new Object[]{"2","feh","29"});
         modelo.addRow(new Object[]{"3","josé","45"});
         modelo.addRow(new Object[]{"4","fernando","26"});
         jTable1.setModel(modelo);*/
-        
-       //TableColumnModel modelo2 = jTable1.getColumnModel();
+        //TableColumnModel modelo2 = jTable1.getColumnModel();
         //modelo2.removeColumn(modelo2.getColumn(0));
-        
         RowSorter<TableModel> ordenador = new TableRowSorter<TableModel>(modelo);
         jTable1.setRowSorter(ordenador);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -128,7 +141,12 @@ public class ListarPessoas extends javax.swing.JDialog {
             }
         });
 
-        jButton2.setText("Atualizar");
+        jButton2.setText("Editar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -165,40 +183,49 @@ public class ListarPessoas extends javax.swing.JDialog {
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         pesquisar();
-    }   
-        private void pesquisar(){
-        DefaultTableModel modelo= (DefaultTableModel) jTable1.getModel();
-       TableRowSorter filtro = new TableRowSorter(modelo);
+    }
+
+    private void pesquisar() {
+        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        TableRowSorter filtro = new TableRowSorter(modelo);
         jTable1.setRowSorter(filtro);
-        String termo =jTextField1.getText();
-        if (termo.length()==0){
-        filtro.setRowFilter(null);
-        }else{
-        filtro.setRowFilter(RowFilter.regexFilter(termo));
+        String termo = jTextField1.getText();
+        if (termo.length() == 0) {
+            filtro.setRowFilter(null);
+        } else {
+            filtro.setRowFilter(RowFilter.regexFilter(termo));
         }   // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-        
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    
-    int pos = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());// TODO add your handling code here:
-        if (pos <= 0){
-            JOptionPane.showConfirmDialog(rootPane,"selecione uma linha traste");
-        }else{
-            DefaultTableModel modelo = (DefaultTableModel)jTable1.getModel();
-            modelo.removeRow(pos);
+
+        int pos = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());// TODO add your handling code here:
+        if (pos <= 0) {
+            JOptionPane.showConfirmDialog(rootPane, "selecione uma linha traste");
+        } else {
             String msg = jTable1.getModel().getValueAt(pos, 0).toString();
-            int id = Interger.parseInt(msg);
+            int id = Integer.parseInt(msg);
             try {
-                PessoaDAOImp dao  = new PessoaDAOImp();
+                PessoaDAOImp dao = new PessoaDAOImp();
                 dao.Remover(id);
                 preenchertabela();
             } catch (Exception e) {
-               // Logger.getLogger(ListarPessoas.class.getName()).log(record);
+                JOptionPane.showConfirmDialog(rootPane, e);
             }
-            
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-       
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int pos = jTable1.getSelectedRow();
+        if (pos < 0) {
+        } else {
+            pos = jTable1.convertRowIndexToModel(pos);
+            String msg = jTable1.getModel().getValueAt(pos, 0).toString();
+            int id = Integer.parseInt(msg);
+            Editar tela = new Editar(pai, true, id);
+            tela.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,7 +257,7 @@ public class ListarPessoas extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ListarPessoas dialog = new ListarPessoas(new javax.swing.JFrame(), true);
+                ListarPessoas dialog = new ListarPessoas(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -249,17 +276,5 @@ public class ListarPessoas extends javax.swing.JDialog {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
-
-   
-
-    private static class Interger {
-
-        private static int parseInt(String a) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        public Interger() {
-        }
-    }
 
 }

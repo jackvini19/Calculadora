@@ -87,6 +87,36 @@ public class PessoaDAOImp implements PessoaDAO{
 
     @Override
     public void Atualizar(Pessoa pes) throws Exception {
+         PreparedStatement ps = null;
+        if(pes == null){
+            throw new Exception("O valor não pode ser nulo");
+        }
+         try {
+            con = Conexao.abrirConexao();
+            System.out.println("Conexão realizada com sucesso");       
+        } catch (Exception e) {
+            System.err.println("Erro na conexão");
+            System.err.println("Erro:"+e.getMessage());
+        }
+         try {
+             con = Conexao.abrirConexao();
+            System.out.println("Conexão realizada com sucesso");    
+            String sql = "UPDATE quemsabe SET nome=?,"
+                 + "email=?,datanasc=? WHERE id=? ";
+            ps = con.prepareStatement(sql);
+            ps.setString(1,pes.getNome());
+            ps.setString(2,pes.getEmail());
+            ps.setString(3,pes.getDatanasc());
+            ps.setInt(4,pes.getId());
+            ps.executeUpdate();
+        } catch (Exception e) {
+           //System.err.println("Erro na conexão");
+            System.err.println("Erro:"+e.getMessage());
+            throw new Exception("Erro ao inserir pessoa :"+ e.getMessage());
+        }finally {
+             Conexao.fecharConexao(con, ps);
+         }
+    
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -189,6 +219,40 @@ public class PessoaDAOImp implements PessoaDAO{
              Conexao.fecharConexao(con, ps, rs);
     }
 }
+
+    @Override
+    public Pessoa Buscar(int id) throws Exception {
+        if (id < 0){
+            throw new Exception ("Erro : id invalido ");
+        }
+        PreparedStatement ps = null;
+        ResultSet rs=null;
+        try {
+             con = Conexao.abrirConexao();
+             System.out.println("Conexão realizada com sucesso");
+             String sql = "SELECT * FROM quemsabe "+
+                     "WHERE email = ? and senha = ?";
+             ps = con.prepareStatement(sql);
+             ps.setInt(1, id);
+             rs = ps.executeQuery();
+             if (rs.next()){
+                 Pessoa pess = new Pessoa();
+                 pess.setId(rs.getInt("id"));
+                 pess.setEmail(rs.getString("email"));
+                 pess.setNome(rs.getString("nome"));
+                 pess.setDatanasc(rs.getString("datanasc"));
+                 return pess;
+             }
+             return null;
+        }
+       catch (Exception e) {
+           //System.err.println("Erro na conexão");
+            System.err.println("Erro:"+e.getMessage());
+            throw new Exception("Erro ao inserir pessoa :"+ e.getMessage());
+        }finally {
+             Conexao.fecharConexao(con, ps, rs);
+    }
+    }
 
 }
 

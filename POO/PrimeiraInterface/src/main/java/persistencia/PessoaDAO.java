@@ -13,6 +13,7 @@ public interface PessoaDAO {
     public void Inserir(Pessoa pes) throws Exception;
     public void Remover(int id) throws Exception;
     public  void Atualizar(Pessoa pes) throws Exception;
+    public Pessoa Buscar(int id)throws Exception;
     public  List<Pessoa>Buscar(Pessoa pes) throws Exception;
     public  List<Pessoa>Listar() throws Exception;
     public boolean VerificarEmail(String email) throws Exception;

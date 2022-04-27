@@ -193,7 +193,7 @@ public class principal1 extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu2ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        ListarPessoas tela = new ListarPessoas(this, true);
+        ListarPessoas tela = new ListarPessoas(this, true,this);
         tela.setVisible(true);// TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
