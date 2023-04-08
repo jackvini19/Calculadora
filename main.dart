@@ -1,191 +1,186 @@
 import 'package:flutter/material.dart';
-import 'package:math_expressions/math_expressions.dart';
 
-void main() => runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeApp(),
-    ));
-
-class HomeApp extends StatefulWidget {
-  @override
-  _HomeAppState createState() => _HomeAppState();
+void main() {
+  runApp(MyApp());
 }
 
-class _HomeAppState extends State<HomeApp> {
-  String output = "0";
-  // bool _usedoperand = false;
-  String _out = "0";
-  double num1 = 0.0;
-  double num2 = 0.0;
-  String operand = "";
-  //int _bufferIndex = 0;
-  //final _buffer = [0.0, 0.0];
+class Item {
+  String title;
+  String subtitle;
+  IconData iconData;
 
-  void deleteEndDigit() {
-    _out = _out.length > 1 ? _out.substring(0, _out.length - 1) : '0';
-  }
+  Item({required this.title, required this.subtitle, required this.iconData});
+}
 
-  //void _addDigit(String digit) {
-  // if (_usedoperand) _out = '0';
+class MyWidget extends StatefulWidget {
+  const MyWidget({super.key});
 
-  //  if (_out.contains('.') && digit == '.') digit = '';
-  //  if (_out == '0' && digit != '.') _out = '';
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
 
-  // _out += digit;
-
-  // _buffer[_bufferIndex] = double.tryParse(_out)!;
-  // _usedoperand = false;
-  // }
-
-  buttonPressed(String btnVal) {
-    print(btnVal);
-    if (btnVal == "C") {
-      _out = "0";
-      num1 = 0.0;
-      num2 = 0.0;
-      operand = "";
-    } else if (btnVal == '<-') {
-      deleteEndDigit();
-    } else if (btnVal == "+" ||
-        btnVal == "-" ||
-        btnVal == "*" ||
-        btnVal == "/") {
-      num1 = double.parse(output);
-      operand = btnVal;
-      _out = "0";
-      output = output + btnVal;
-    } else if (btnVal == ".") {
-      if (_out.contains(".")) {
-        print("Already exist");
-        return;
-      } else {
-        _out = _out + btnVal;
-      }
-    } else if (btnVal == "=") {
-      num2 = double.parse(output);
-      if (operand == "+") {
-        _out = (num2 + num1).toString();
-      }
-      if (operand == "-") {
-        _out = (num1 - num2).toString();
-      }
-      if (operand == "*") {
-        _out = (num2 * num1).toString();
-      }
-      if (operand == "/") {
-        _out = (num1 / num2).toString();
-      }
-      num1 = 0.0;
-      num2 = 0.0;
-      //_out = "0";
-    } else {
-      _out = _out + btnVal;
-    }
-
-    setState(() {
-      output = double.parse(_out).toStringAsFixed(2);
-    });
-  }
-
-  Widget buildButton(String ButtonVal) {
-    // ignore: unnecessary_new
-    return new Expanded(
-        child: Container(
-      padding: EdgeInsets.all(0.0),
-      margin: EdgeInsets.all(10.0),
-      // ignore: prefer_const_constructors
-      decoration: BoxDecoration(
-        color: Color.fromARGB(255, 21, 255, 0),
-        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        //
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blue,
-            offset: Offset(2.0, 2.0),
-          ),
-          //
-          BoxShadow(
-            color: Color.fromARGB(255, 204, 186, 20),
-            offset: Offset(-2.0, -2.0),
-          ),
-        ],
-      ),
-      child: MaterialButton(
-        padding: EdgeInsets.all(30.0),
-        child: Text(
-          ButtonVal,
-          style: TextStyle(fontSize: 22.0),
-        ),
-        onPressed: () => buttonPressed(ButtonVal),
-      ),
-    ));
-  }
+class _MyWidgetState extends State<MyWidget> {
+  List<Item> itemList = [];
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 0, 79, 248),
-        body: Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.centerRight,
-                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 50.0),
-                child: Text(
-                  output,
-                  style: TextStyle(fontSize: 60.0),
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(
+            "Categorias",
+            style: TextStyle(
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontSize: 20.0,
+            ),
+          ),
+          backgroundColor: Color.fromARGB(255, 0, 0, 0)),
+      body: itemList.isEmpty
+          ? Center(child: Text("Sem Itens adicionados."))
+          : ListView.builder(
+              itemCount: itemList.length,
+              itemBuilder: (context, index) {
+                Item item = itemList[index];
+                return Card(
+                  child: ListTile(
+                    leading: Icon(item.iconData),
+                    title: Text(item.title),
+                    subtitle: Text(item.subtitle),
+                  ),
+                );
+              },
+            ),
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            bottom: 20.0,
+            left: 0.0,
+            right: 0.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton(
+                  backgroundColor: Colors.black,
+                  child: itemList.isEmpty
+                      ? Icon(Icons.add)
+                      : Icon(itemList.last.iconData),
+                  onPressed: () async {
+                    await showInformationDialog(context);
+                  },
                 ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text("Jack vinicius"),
+              accountEmail: Text("jackvini@example.com"),
+              currentAccountPicture: CircleAvatar(
+                child: Icon(Icons.person),
+                backgroundColor: Color.fromARGB(255, 255, 255, 255),
               ),
-              Expanded(
-                child: Divider(),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(
+                    255, 29, 28, 28), // define a cor de fundo como branco
               ),
-              Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      buildButton("."),
-                      buildButton("C"),
-                      buildButton("<-"),
-                      buildButton("*")
-                    ],
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text("Configurações"),
+              onTap: () {
+                // Implement your settings logic here
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.help),
+              title: Text("ajuda"),
+              onTap: () {
+                // Implement your help logic here
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> showInformationDialog(BuildContext context) async {
+    TextEditingController titleController = TextEditingController();
+    TextEditingController subtitleController = TextEditingController();
+    IconData? selectedIcon;
+
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            content: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: titleController,
+                    decoration: InputDecoration(
+                      hintText: "Título",
+                    ),
                   ),
-                  Row(
-                    children: <Widget>[
-                      buildButton("7"),
-                      buildButton("8"),
-                      buildButton("9"),
-                      buildButton("/")
-                    ],
+                  TextFormField(
+                    controller: subtitleController,
+                    decoration: InputDecoration(
+                      hintText: "Subtítulo",
+                    ),
                   ),
-                  Row(
-                    children: <Widget>[
-                      buildButton("4"),
-                      buildButton("5"),
-                      buildButton("6"),
-                      buildButton("+")
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      buildButton("1"),
-                      buildButton("2"),
-                      buildButton("3"),
-                      buildButton("-")
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      buildButton("0"),
-                      buildButton("="),
-                    ],
+                  IconButton(
+                    icon: Icon(Icons.add_a_photo),
+                    onPressed: () {
+                      // seu código aqui
+                    },
                   )
                 ],
               ),
+            ),
+            title: Text('Adiciona novo item'),
+            actions: <Widget>[
+              InkWell(
+                child: Text('CANCELAR'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              InkWell(
+                child: Text('ADD'),
+                onTap: () {
+                  Item newItem = Item(
+                    title: titleController.text,
+                    subtitle: subtitleController.text,
+                    iconData: selectedIcon ?? Icons.help,
+                  );
+                  setState(() {
+                    itemList.add(newItem);
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
             ],
-          ),
-        ),
-      ),
+          );
+        });
+      },
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: MyWidget(),
     );
   }
 }
