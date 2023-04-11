@@ -1,0 +1,155 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(const Texto());
+}
+
+class Texto extends StatefulWidget {
+  const Texto({super.key});
+
+  @override
+  State<Texto> createState() => _TextoState();
+}
+
+class _TextoState extends State<Texto> {
+  final kmGas = TextEditingController();
+  final kmEt = TextEditingController();
+  final precoGas = TextEditingController();
+  final precoEt = TextEditingController();
+  double custo01 = 0;
+  double custo02 = 0;
+  String msg = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarPreferences();
+  }
+
+  void _carregarPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    kmGas.text = prefs.getDouble('kmgas')?.toString() ?? '';
+    kmEt.text = prefs.getDouble('kmetanol')?.toString() ?? '';
+  }
+
+  void _alterar() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('kmgas', double.tryParse(kmGas.text) ?? 0);
+    prefs.setDouble('kmetanol', double.tryParse(kmEt.text) ?? 0);
+    setState(
+      () {
+        custo01 = double.parse(kmGas.text) / double.parse(precoGas.text);
+        custo02 = double.parse(kmEt.text) / double.parse(precoEt.text);
+        if (custo01 >= custo02) {
+          msg = 'Abasteça com Gasolina';
+        } else {
+          msg = 'Abasteça com Etanol';
+        }
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            children: [
+              // Valores Km
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                    const Expanded(
+                      flex: 2,
+                      child: Text("Km com Gasolina:"),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        controller: kmGas,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                    const Expanded(
+                      flex: 2,
+                      child: Text("Km com Etanol:"),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        controller: kmEt,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                  ],
+                ),
+              ),
+              // Valores preco
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                    const Expanded(
+                      flex: 2,
+                      child: Text("Preço do Gasolina:"),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        controller: precoGas,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                    const Expanded(
+                      flex: 2,
+                      child: Text("Preço do Etanol:"),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        controller: precoEt,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(),
+                    ),
+                  ],
+                ),
+              ),
+              // Mensagem
+              Expanded(flex: 1, child: Text(msg)),
+              Expanded(
+                flex: 1,
+                child: Container(),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _alterar,
+          tooltip: 'Calcular',
+          child: const Text('Calcular'),
+        ),
+      ),
+    );
+  }
+}
